@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "ClickBasket backend server",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -21,7 +21,6 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.11",
-    "nodemon": "^3.1.11",
     "razorpay": "^2.9.6",
     "streamifier": "^0.1.1",
     "xlsx": "^0.18.5"
