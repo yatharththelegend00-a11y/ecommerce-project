@@ -27,6 +27,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { API_BASE_URL } from '../config';
 
 /* ================= CONSTANTS ================= */
 const CATEGORIES = ['Electronics', 'Fashion', 'Shoes', 'Accessories'];
@@ -60,12 +61,12 @@ const Admin = () => {
 
   /* ================= FETCH ================= */
   const fetchProducts = async () => {
-    const res = await axios.get('/api/products');
+    const res = await axios.get(`${API_BASE_URL}/api/products`);
     setProducts(res.data || []);
   };
 
   const fetchOrders = async () => {
-    const res = await axios.get('/api/orders');
+    const res = await axios.get(`${API_BASE_URL}/api/orders`);
     setOrders(res.data || []);
   };
 
@@ -82,7 +83,7 @@ const Admin = () => {
     formData.append('file', file);
 
     const res = await axios.post(
-      'http://localhost:5000/api/upload',
+      `${API_BASE_URL}/api/upload`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -108,7 +109,7 @@ const Admin = () => {
     e.preventDefault();
     if (!newProduct.category) return alert('Select category');
 
-    await axios.post('/api/products', {
+    await axios.post(`${API_BASE_URL}/api/products`, {
       ...newProduct,
       variants: newVariants,
     });
@@ -130,7 +131,7 @@ const Admin = () => {
   const submitEditProduct = async (e) => {
     e.preventDefault();
 
-    await axios.post('/api/products', {
+    await axios.post(`${API_BASE_URL}/api/products`, {
       id: editProduct.id,
       ...editProduct,
       variants: editVariants,

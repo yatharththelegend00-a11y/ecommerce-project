@@ -12,6 +12,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import { API_BASE_URL } from '../config';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Register = () => {
     setSuccess('');
 
     try {
-      await axios.post('/api/register', formData);
+      await axios.post(`${API_BASE_URL}/api/register`, formData);
       setSuccess('Account created successfully! Redirecting to login...');
       setTimeout(() => navigate('/login'), 1500);
     } catch (err) {

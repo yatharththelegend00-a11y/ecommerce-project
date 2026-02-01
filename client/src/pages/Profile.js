@@ -11,6 +11,7 @@ import {
   Avatar,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Profile = () => {
 
     // OPTIONAL: try backend fetch (safe even if API doesn't exist)
     axios
-      .post('/api/profile', { email: storedEmail })
+      .post(`${API_BASE_URL}/api/profile`, { email: storedEmail })
       .then((res) => {
         if (res.data) {
           setProfile((prev) => ({
@@ -55,7 +56,7 @@ const Profile = () => {
   /* ================= SAVE PROFILE ================= */
   const handleSave = async () => {
     try {
-      await axios.post('/api/profile', profile);
+      await axios.post(`${API_BASE_URL}/api/profile`, profile);
       alert('Profile updated successfully');
     } catch {
       alert('Profile saved locally');

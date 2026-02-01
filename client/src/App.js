@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Box, ThemeProvider, CssBaseline } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -22,24 +22,27 @@ import ProductDetails from './pages/ProductDetails';
 import About from './pages/About';
 import Profile from './pages/Profile';
 
+/* ================= LAYOUT ================= */
 const Layout = ({ children }) => {
-  const path = window.location.pathname;
-  const isAuthPage = path === '/' || path === '/login' || path === '/register';
+  const location = useLocation();
+
+  // Hide only on auth pages
+  const hideLayout =
+    location.pathname === '/login' ||
+    location.pathname === '/register';
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
-      {!isAuthPage && <Navbar />}
+      {!hideLayout && <Navbar />}
       <Box component="main" sx={{ flexGrow: 1 }}>
         {children}
       </Box>
-      {!isAuthPage && <Footer />}
+      {!hideLayout && <Footer />}
     </Box>
   );
 };
 
 function App() {
-  const token = localStorage.getItem('token');
-
   return (
     <GoogleOAuthProvider clientId="877723697920-tk0dibfl8i9eibep7jhrn8s9pjg94h1g.apps.googleusercontent.com">
       <ThemeProvider theme={theme}>
@@ -55,17 +58,19 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* PUBLIC / GUEST ALLOWED */}
+                {/* PUBLIC */}
                 <Route path="/home" element={<Home />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/about" element={<About />} />
 
-                {/* LOGIN REQUIRED */}
-                <Route path="/profile" element={token ? <Profile /> : <Navigate to="/login" />} />
-                <Route path="/orders" element={token ? <Orders /> : <Navigate to="/login" />} />
-                <Route path="/admin" element={token ? <Admin /> : <Navigate to="/login" />} />
+                {/* ✅ GUEST + USER BOTH */}
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/orders" element={<Orders />} />
+
+                {/* ADMIN */}
+                <Route path="/admin" element={<Admin />} />
               </Routes>
             </Layout>
 

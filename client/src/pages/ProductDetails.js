@@ -22,6 +22,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
+import { API_BASE_URL } from '../config';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -37,7 +38,7 @@ const ProductDetails = () => {
 
   /* ================= FETCH PRODUCT ================= */
   useEffect(() => {
-    axios.get(`/api/products/${id}`).then((res) => {
+    axios.get(`${API_BASE_URL}/api/products/${id}`).then((res) => {
       const p = res.data;
       const v = p.variants[0];
 

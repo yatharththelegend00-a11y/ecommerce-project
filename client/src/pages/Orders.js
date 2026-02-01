@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../config';
 import axios from 'axios';
 import {
   Box,
@@ -15,7 +16,7 @@ const Orders = () => {
   const userEmail = localStorage.getItem('user_email');
 
   useEffect(() => {
-    axios.get('/api/orders').then((res) => {
+    axios.get(`${API_BASE_URL}/api/orders`).then((res) => {
       const myOrders = res.data.filter(
         (order) => order.user_email === userEmail
       );

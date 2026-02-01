@@ -13,6 +13,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
+import { API_BASE_URL } from '../config';
 
 /* ✅ GUARANTEED WORKING FASHION IMAGE */
 const HERO_BG =
@@ -28,7 +29,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get('/api/products')
+      .get(`${API_BASE_URL}/api/products`)
       .then((res) => setProducts(res.data))
       .finally(() => setLoading(false));
   }, []);

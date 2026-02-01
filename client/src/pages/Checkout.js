@@ -13,6 +13,7 @@ import {
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 /* ================= RAZORPAY LOADER ================= */
 const loadRazorpay = () =>

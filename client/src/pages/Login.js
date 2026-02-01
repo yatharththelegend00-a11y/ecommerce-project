@@ -14,6 +14,7 @@ import axios from 'axios';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import Logo from '../components/Logo';
+import { API_BASE_URL } from '../config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Login = () => {
     setError('');
 
     try {
-      const res = await axios.post('/api/login', {
+      const res = await axios.post(`${API_BASE_URL}/api/login`, {
         email,
         password,
       });
@@ -51,7 +52,7 @@ const Login = () => {
     try {
       const decoded = jwtDecode(credentialResponse.credential);
 
-      const res = await axios.post('/api/google-login', {
+      const res = await axios.post(`${API_BASE_URL}/api/google-login`, {
         email: decoded.email,
         name: decoded.name,
         googleId: decoded.sub,
