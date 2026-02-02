@@ -15,6 +15,7 @@ import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 
+
 /* ================= RAZORPAY LOADER ================= */
 const loadRazorpay = () =>
   new Promise((resolve) => {
@@ -26,6 +27,7 @@ const loadRazorpay = () =>
   });
 
 const Checkout = () => {
+  console.log("RAZORPAY KEY =>", process.env.REACT_APP_RAZORPAY_KEY_ID);
   const { cart, clearCart } = useCart();
   const navigate = useNavigate();
 
