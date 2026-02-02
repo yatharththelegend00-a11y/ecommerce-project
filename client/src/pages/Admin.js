@@ -152,7 +152,7 @@ const Admin = () => {
 
   /* ================= ORDER STATUS ================= */
   const updateOrderStatus = async (order, status) => {
-    await axios.put(`/api/orders/${order.id}`, { status });
+    await axios.put(`${API_BASE_URL}/api/orders/${order.id}`, { status });
     fetchOrders();
   };
 

@@ -98,7 +98,7 @@ const Checkout = () => {
 
     try {
       setLoading(true);
-      await axios.post('/api/orders', {
+      await axios.post(`${API_BASE_URL}/api/orders`, {
         email: form.email,
         user_name: form.name,
         phone: form.phone,
@@ -126,7 +126,7 @@ const Checkout = () => {
     const loaded = await loadRazorpay();
     if (!loaded) return alert('Razorpay failed to load');
 
-    const { data: order } = await axios.post('/api/payment/create-order', {
+    const { data: order } = await axios.post(`${API_BASE_URL}/api/payment/create-order`, {
       amount: total,
     });
 
