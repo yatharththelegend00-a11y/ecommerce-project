@@ -131,7 +131,7 @@ const Checkout = () => {
     });
 
     const options = {
-      key: 'rzp_test_S8uQnPyJjjj7xR',
+      key: process.env.REACT_APP_RAZORPAY_KEY_ID,
       amount: order.amount,
       currency: 'INR',
       name: 'Click Basket',
