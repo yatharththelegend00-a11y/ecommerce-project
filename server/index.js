@@ -310,8 +310,26 @@ app.post('/api/products', async (req, res) => {
 });
 
 app.delete('/api/products/:id', async (req, res) => {
-  try { await db.execute({ sql: "DELETE FROM variants WHERE product_id = ?", args: [req.params.id] }); await db.execute({ sql: "DELETE FROM products WHERE id = ?", args: [req.params.id] }); res.json({ message: "Product Deleted" }); } catch (e) { res.status(500).json({ error: e.message }); }
+  try {
+    const { id } = req.params;
+
+    await db.execute({
+      sql: "DELETE FROM variants WHERE product_id = ?",
+      args: [id],
+    });
+
+    await db.execute({
+      sql: "DELETE FROM products WHERE id = ?",
+      args: [id],
+    });
+
+    res.json({ message: "Product deleted successfully" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e.message });
+  }
 });
+
 
 // --- AI BANNER ROUTES ---
 app.post('/api/admin/generate-banner', async (req, res) => {
