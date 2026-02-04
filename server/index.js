@@ -166,6 +166,26 @@ app.use((req, res, next) => {
 
 
 // --- AUTH ROUTES ---
+app.get('/api/profile', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: "No token" });
+
+  try {
+    const decoded = jwt.verify(token, 'SECRET_KEY_HERE');
+    const result = await db.execute({
+      sql: "SELECT name, email, phone, address FROM users WHERE id = ?",
+      args: [decoded.id],
+    });
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (e) {
+    res.status(401).json({ error: "Invalid token" });
+  }
+});
 app.post('/api/google-login', async (req, res) => {
   const { email, name, googleId } = req.body;
   const ADMIN_EMAIL = 'clickbasket2026@gmail.com';
