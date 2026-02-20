@@ -146,8 +146,33 @@ const Admin = () => {
   /* ================= DELETE PRODUCT ================= */
   const deleteProduct = async (id) => {
     if (!window.confirm('Delete product?')) return;
-    await axios.delete(`/api/products/${id}`);
-    fetchProducts();
+
+    const attempts = [
+      () => axios.post(`${API_BASE_URL}/api/products`, { action: 'delete', id }),
+      () => axios.post(`${API_BASE_URL}/api/products/${id}/delete`),
+      () => axios.post(`${API_BASE_URL}/api/products/delete`, { id }),
+      () => axios.delete(`${API_BASE_URL}/api/products/${id}`),
+    ];
+
+    let lastError = null;
+
+    for (const attempt of attempts) {
+      try {
+        await attempt();
+        setMessage({ type: 'success', text: 'Product deleted successfully' });
+        await fetchProducts();
+        return;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    const status = lastError?.response?.status;
+    setMessage({
+      type: 'error',
+      text: `Delete failed${status ? ` (HTTP ${status})` : ''}. Please redeploy frontend/backend to latest code.`,
+    });
+    console.error('Delete product failed after all fallbacks', lastError);
   };
 
   /* ================= ORDER STATUS ================= */

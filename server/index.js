@@ -317,33 +317,65 @@ app.get('/api/products/:id', async (req, res) => {
 });
 
 app.post('/api/products', async (req, res) => {
-  const { name, description, category, brand, variants } = req.body; 
+  const { id, deleteId, name, description, category, brand, variants } = req.body;
+
   try {
+    const targetDeleteId = deleteId || (req.body.action === 'delete' ? id : null);
+    if (targetDeleteId) {
+      await removeProductById(targetDeleteId);
+      return res.json({ message: 'Product deleted successfully' });
+    }
+
     const pResult = await db.execute({ sql: "INSERT INTO products (name, description, category, brand, base_price) VALUES (?, ?, ?, ?, ?)", args: [name, description, category, brand, variants[0]?.price || 0] });
     const prodId = pResult.lastInsertRowid.toString();
     for (const v of variants) {
-      const imagesJSON = JSON.stringify(v.images || []); 
+      const imagesJSON = JSON.stringify(v.images || []);
       await db.execute({ sql: "INSERT INTO variants (product_id, color, size, price, discount, stock, images) VALUES (?, ?, ?, ?, ?, ?, ?)", args: [prodId, v.color, v.size, v.price, v.discount || 0, v.stock, imagesJSON] });
     }
     res.status(201).json({ message: "Product Created" });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+async function removeProductById(id) {
+  await db.execute({
+    sql: "DELETE FROM variants WHERE product_id = ?",
+    args: [id],
+  });
+
+  await db.execute({
+    sql: "DELETE FROM products WHERE id = ?",
+    args: [id],
+  });
+}
+
 app.delete('/api/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
-    await db.execute({
-      sql: "DELETE FROM variants WHERE product_id = ?",
-      args: [id],
-    });
-
-    await db.execute({
-      sql: "DELETE FROM products WHERE id = ?",
-      args: [id],
-    });
-
+    await removeProductById(id);
     res.json({ message: "Product deleted successfully" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/products/:id/delete', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await removeProductById(id);
+    res.json({ message: "Product deleted successfully" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/products/delete', async (req, res) => {
+  try {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ error: 'id is required' });
+    await removeProductById(id);
+    res.json({ message: 'Product deleted successfully' });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: e.message });
