@@ -146,10 +146,10 @@ const Admin = () => {
   /* ================= DELETE PRODUCT ================= */
   const deleteProduct = async (id) => {
     if (!window.confirm('Delete product?')) return;
-    await axios.delete(`/api/products/${id}`);
+    await axios.delete(`${API_BASE_URL}/api/products/${id}`);
+    await axios.delete(`${API_BASE_URL}/api/products/${id}`);
     fetchProducts();
   };
-
   /* ================= ORDER STATUS ================= */
   const updateOrderStatus = async (order, status) => {
     await axios.put(`${API_BASE_URL}/api/orders/${order.id}`, { status });
