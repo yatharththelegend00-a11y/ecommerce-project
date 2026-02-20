@@ -146,13 +146,34 @@ const Admin = () => {
   /* ================= DELETE PRODUCT ================= */
   const deleteProduct = async (id) => {
     if (!window.confirm('Delete product?')) return;
-     try {
-      await axios.delete(`${API_BASE_URL}/api/products/${id}`);
-    } catch (error) {
-      if (error?.response?.status !== 405) throw error;
+      try {
       await axios.post(`${API_BASE_URL}/api/products/${id}/delete`);
+      setMessage({ type: 'success', text: 'Product deleted successfully' });
+      await fetchProducts();
+      return;
+    } catch (postError) {
+      // Fallback for servers that only support DELETE.
+      try {
+        await axios.delete(`${API_BASE_URL}/api/products/${id}`);
+        setMessage({ type: 'success', text: 'Product deleted successfully' });
+        await fetchProducts();
+        return;
+      } catch (deleteError) {
+        try {
+          await axios.post(`${API_BASE_URL}/api/products/delete`, { id });
+          setMessage({ type: 'success', text: 'Product deleted successfully' });
+          await fetchProducts();
+          return;
+        } catch (bodyDeleteError) {
+          const status = bodyDeleteError?.response?.status || deleteError?.response?.status || postError?.response?.status;
+          setMessage({
+            type: 'error',
+            text: `Delete failed${status ? ` (HTTP ${status})` : ''}. Please check server deployment.`,
+          });
+          console.error('Delete product failed', { postError, deleteError, bodyDeleteError });
+        }
+      }
     }
-    fetchProducts();
   };
   /* ================= ORDER STATUS ================= */
   const updateOrderStatus = async (order, status) => {
