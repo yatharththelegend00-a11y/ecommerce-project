@@ -146,8 +146,12 @@ const Admin = () => {
   /* ================= DELETE PRODUCT ================= */
   const deleteProduct = async (id) => {
     if (!window.confirm('Delete product?')) return;
-    await axios.delete(`${API_BASE_URL}/api/products/${id}`);
-    await axios.delete(`${API_BASE_URL}/api/products/${id}`);
+     try {
+      await axios.delete(`${API_BASE_URL}/api/products/${id}`);
+    } catch (error) {
+      if (error?.response?.status !== 405) throw error;
+      await axios.post(`${API_BASE_URL}/api/products/${id}/delete`);
+    }
     fetchProducts();
   };
   /* ================= ORDER STATUS ================= */

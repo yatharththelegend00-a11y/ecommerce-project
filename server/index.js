@@ -329,20 +329,32 @@ app.post('/api/products', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+const removeProductById = async (id) => {
+  await db.execute({
+    sql: "DELETE FROM variants WHERE product_id = ?",
+    args: [id],
+  });
+
+  await db.execute({
+    sql: "DELETE FROM products WHERE id = ?",
+    args: [id],
+  });
+};
 app.delete('/api/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    await removeProductById(id);
+    res.json({ message: "Product deleted successfully" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e.message });
+  }
+});
 
-    await db.execute({
-      sql: "DELETE FROM variants WHERE product_id = ?",
-      args: [id],
-    });
-
-    await db.execute({
-      sql: "DELETE FROM products WHERE id = ?",
-      args: [id],
-    });
-
+    app.post('/api/products/:id/delete', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await removeProductById(id);
     res.json({ message: "Product deleted successfully" });
   } catch (e) {
     console.error(e);
